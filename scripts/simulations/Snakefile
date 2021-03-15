@@ -1,0 +1,100 @@
+configfile: 'snake_conf.yaml'
+
+import sys
+
+sys.path.append('../..')
+from utils import settings
+
+CORRECTION = 'wasp'
+REGIONS = 'cusanovich_dm6_peaks_1kb'
+LABEL = 'f1_all_windows'
+EXP_ID = 'SS148'
+adata_path = os.path.join(
+    settings.DATA_DIR,
+    LABEL,
+    '_'.join([EXP_ID, REGIONS, CORRECTION, 'allelic_counts.h5ad']))
+
+sim_path = lambda x: os.path.join(
+        settings.DATA_DIR, LABEL, 'simulations', x)
+
+
+def out_prefix(
+        model,
+        sim_kern_var,
+        sim_kern_mix,
+        sim_kern_disc,
+        sim_overdisp,
+        suffix=''):
+    return sim_path(
+        '-'.join([
+            'model_%s' % model,
+            'simkernvar_%s' % sim_kern_var,
+            'simkernmix_%s' % sim_kern_mix,
+            'simkerndisc_%s' % sim_kern_disc,
+            'simoverdisp_%s' % sim_overdisp]) + suffix)
+
+
+rule all:
+    input:
+        pvals_hethom=expand(out_prefix(
+            model='{model}',
+            sim_kern_var='{sim_kern_var}',
+            sim_kern_mix='{sim_kern_mix}',
+            sim_kern_disc='global',
+            sim_overdisp='{sim_overdisp}',
+            suffix='-result_pvals.txt'),
+            model=['dalijoint', 'dalihet', 'lrt', 'ttest'],
+            sim_overdisp=config['sim_overdisp'],
+            sim_kern_var=config['sim_kern_var'],
+            sim_kern_mix=config['sim_kern_mix']),
+        pvals_contdisc=expand(out_prefix(
+            model='{model}',
+            sim_kern_var='{sim_kern_var}',
+            sim_kern_mix='{sim_kern_mix}',
+            sim_kern_disc='cluster',
+            sim_overdisp='{sim_overdisp}',
+            suffix='-result_pvals.txt'),
+            model=['dalihet', 'ttest'],
+            sim_overdisp=config['sim_overdisp'],
+            sim_kern_var=config['sim_kern_var'],
+            sim_kern_mix=config['sim_kern_mix']),
+        pvals_null=expand(out_prefix(
+            model='{model}',
+            sim_kern_var='0',
+            sim_kern_mix='0',
+            sim_kern_disc='global',
+            sim_overdisp='{sim_overdisp}',
+            suffix='-result_pvals.txt'),
+            model=['dalijoint', 'dalihet', 'lrt', 'ttest'],
+            sim_overdisp=config['sim_overdisp'])
+
+
+rule simulate:
+    input:
+        adata=adata_path
+    output:
+        pvals=out_prefix(
+            model='{model}',
+            sim_kern_var='{sim_kern_var}',
+            sim_kern_mix='{sim_kern_mix}',
+            sim_kern_disc='{sim_kern_disc}',
+            sim_overdisp='{sim_overdisp}',
+            suffix='-result_pvals.txt')
+    threads:
+        config['ncores']
+    shell:
+        'python run_simulation.py'
+        '   --model={wildcards.model}'
+        '   --adata={input.adata}'
+        '   --outprefix=' + out_prefix(
+            model='{wildcards.model}',
+            sim_kern_var='{wildcards.sim_kern_var}',
+            sim_kern_mix='{wildcards.sim_kern_mix}',
+            sim_kern_disc='{wildcards.sim_kern_disc}',
+            sim_overdisp='{wildcards.sim_overdisp}') + ''
+        '   --sim_kern_var={wildcards.sim_kern_var}'
+        '   --sim_overdisp={wildcards.sim_overdisp}'
+        '   --sim_kern_mix={wildcards.sim_kern_mix}'
+        '   --sim_kern_disc={wildcards.sim_kern_disc}'
+        '   --ncores={threads}'
+
