@@ -16,7 +16,8 @@ import utils.settings as settings
 
 
 CACHE_DIR = os.path.join(settings.DATA_DIR, '.cache')
-
+if not os.path.exists(CACHE_DIR):
+    os.makedirs(CACHE_DIR, exist_ok=True)
 
 def clear_cache():
     import shutil
