@@ -64,7 +64,11 @@ print('Simulating ...')
 rng = np.random.default_rng(seed=params['seed'])
 
 # read anndata with counts and cell states
+<<<<<<< HEAD
 adata = sc.read(ADATA_PATH)
+=======
+adata = sc.read(params[ADATA_PATH])
+>>>>>>> 2c014289332ac40fdb465f121ab44b6860de8d6e
 
 if params['tcounts'] == 'real':
     # filter
@@ -158,16 +162,24 @@ else:
 # define model
 if params['test'] == 'ANOVA':
     m = scdali.models.ScipyClusterTest
+<<<<<<< HEAD
 elif params['test'] == 'DaliHetBinomial':
     m = scdali.models.DaliHet
+=======
+>>>>>>> 2c014289332ac40fdb465f121ab44b6860de8d6e
 else:
     m = getattr(scdali.models, params['test'])
 
 init_kwargs = {}
+<<<<<<< HEAD
 if params['test'] in ['DaliJoint', 'DaliHom']:
     init_kwargs['base_rate'] = .5
 if params['test'] == 'DaliHetBinomial':
     init_kwargs['binomial'] = True
+=======
+if params['test'] in ['DALIJoint', 'DALIHom']:
+    init_kwargs['base_rate'] = .5
+>>>>>>> 2c014289332ac40fdb465f121ab44b6860de8d6e
 if params['test'] != 'DaliHom':
     init_kwargs['E'] = cell_state
 

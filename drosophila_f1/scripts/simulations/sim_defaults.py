@@ -34,7 +34,10 @@ CHOICES = {
     'test': [
         'DaliJoint',
         'DaliHet',
+<<<<<<< HEAD
         'DaliHetBinomial',
+=======
+>>>>>>> 2c014289332ac40fdb465f121ab44b6860de8d6e
         'DaliHom',
         'OLS',
         'BetaBinomialGLM',
