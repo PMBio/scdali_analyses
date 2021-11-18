@@ -1,0 +1,5 @@
+test,sim_overdisp,sim_kern_disc,sim_kern_var
+DaliJoint,2.0,global,0.0
+DaliJoint,5.0,global,0.0
+DaliHom,2.0,global,0.0
+DaliHom,5.0,global,0.0

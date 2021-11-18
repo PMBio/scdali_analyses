@@ -1,4 +1,7 @@
 drosophila_f1/data/f1_all_windows/*
+drosophila_f1/data/cistopic/*
+drosophila_f1/notebooks/figures/*
+drosophila_f1/scripts/simulations/results/
 ipsc_endoderm/data/*
 
 .DS_Store

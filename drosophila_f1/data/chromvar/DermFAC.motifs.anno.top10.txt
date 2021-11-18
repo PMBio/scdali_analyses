@@ -1,0 +1,30 @@
+ttk	Primordium, Nervous system, Muscle, Midgut, Epidermis	Peak1
+gatae	Primordium, Midgut	Peak1
+bin	Muscle	Peak1
+usp	Primordium, Nervous system, Midgut	Peak1
+sna	Primordium, Nervous system	Peak1
+pho	Ubiquitous	Peak1
+h	Primordium, Nervous system, Midgut	Peak1
+lola	Primordium, Nervous system	Peak1
+slp1	Primordium, Nervous system, Muscle, Midgut, Epidermis	Peak1
+phol	Ubiquitous	Peak1
+ttk	Primordium, Nervous system, Muscle, Midgut, Epidermis	Peak2
+tin	Primordium, Muscle, Fat body	Peak2
+twi	Primordium, Muscle	Peak2
+disco	Primordium, Nervous system, Midgut	Peak2
+gatae	Primordium, Midgut	Peak2
+lmd	Muscle	Peak2
+Trl	Primordium, Nervous system, Muscle, Midgut	Peak2
+KR	Primordium, Nervous system, Muscle	Peak2
+chinmo	Primordium, Nervous system	Peak2
+pho	Ubiquitous	Peak2
+gatae	Primordium, Midgut	Peak3
+lola	Primordium, Nervous system	Peak3
+stat92e	Primordium, Nervous system, Muscle, Midgut, Epidermis	Peak3
+Trl	Primordium, Nervous system, Muscle, Midgut	Peak3
+lmd	Muscle	Peak3
+ttk	Primordium, Nervous system, Muscle, Midgut, Epidermis	Peak3
+tin	Primordium, Muscle, Fat body	Peak3
+kni	Primordium, Midgut, Epidermis	Peak3
+vfl	Primordium, Nervous system, Muscle, Midgut, Fat body, Epidermis	Peak3
+dtcf	Primordium, Nervous system	Peak3
