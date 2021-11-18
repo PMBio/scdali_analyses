@@ -10,8 +10,8 @@ from utils import settings
 
 import scanpy as sc
 
-from dali import run_gp
-from dali.utils.stats import compute_quantile_diff, apply_fdr_bh
+from scdali import run_interpolation
+from scdali.utils.stats import compute_quantile_diff, apply_fdr_bh
 
 
 EXP_IDS = ['SS148', 'SS157', 'SS158', 'SS159']
@@ -65,23 +65,19 @@ def process_adata(file_in, file_out, n_cores, test_run=False):
     D = adata.layers['allelic_total'].A.astype(float)
 
     cell_state_continuous = adata.obsm[CELL_STATE_CONT].astype(float)
-    lineage_ids, lineage_index = adata.obs[CELL_STATE_DISC].factorize(sort=True)
 
     # run model to obtain smoothed rate estimates and effect sizes
     print('[f1 analysis][GP] Fitting interpolation model')
-    results = run_gp(
+    results = run_interpolation(
         A=A, D=D, cell_state=cell_state_continuous,
         kernel='Linear',
         num_inducing=1100,
         max_iter=2800,
         n_cores=n_cores,
-        return_prior_mean=True,
-        cluster_ids=lineage_ids)
+        return_prior_mean=True)
 
     adata.layers['gp_post_mean'] = results['posterior_mean']
     adata.layers['gp_post_var'] = results['posterior_var']
-    adata.varm['gp_post_lineage_mean'] = results['posterior_cluster_mean']
-    adata.varm['gp_post_lineage_var'] = results['posterior_cluster_var']
     adata.var['gp_mean'] = results['prior_mean']
 
     # compute effect size (5% quantile difference)

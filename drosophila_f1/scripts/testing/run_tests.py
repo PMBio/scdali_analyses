@@ -14,7 +14,7 @@ from statsmodels.stats.multitest import multipletests
 sys.path.append('../..')
 from utils import settings
 
-from dali import run_dali
+from scdali import run_tests
 
 
 EXP_IDS = ['SS148', 'SS157', 'SS158', 'SS159']
@@ -72,62 +72,61 @@ def process_adata(file_in, file_out, n_cores, test_run=False):
     # run tests
 
     # 1. dalihet on vae embedding
-    print('[f1 analysis][TEST] Running DaliHet (VAE)')
-    adata.var['DALIHET_VAE'] = run_dali(
+    print('[f1 analysis][TEST] Running scDaliHet (VAE)')
+    adata.var['DALIHET_VAE'] = run_tests(
         A=A, D=D,
         cell_state=cell_state_cont,
-        test='daliBB',
+        model='scDALI-Het',
         n_cores=n_cores)['pvalues']
 
     # 2. dalihet on leiden clusters
-    print('[f1 analysis][TEST] Running DaliHet (LEIDEN)')
-    adata.var['DALIHET_LEIDEN'] = run_dali(
+    print('[f1 analysis][TEST] Running scDaliHet (LEIDEN)')
+    adata.var['DALIHET_LEIDEN'] = run_tests(
         A=A, D=D,
         cell_state=cell_state_disc,
-        test='daliBB',
+        model='scDALI-Het',
         n_cores=n_cores)['pvalues']
 
     # 3. dalihet on time
-    print('[f1 analysis][TEST] Running DaliHet (TIME)')
-    adata.var['DALIHET_TIME'] = run_dali(
+    print('[f1 analysis][TEST] Running scDaliHet (TIME)')
+    adata.var['DALIHET_TIME'] = run_tests(
         A=A, D=D,
         cell_state=cell_state_time,
-        test='daliBB',
+        model='scDALI-Het',
         n_cores=n_cores)['pvalues']
 
     # note: assumes no sex chromosomes present!
     # 4. dalijoint
-    print('[f1 analysis][TEST] Running DaliJoint (VAE)')
-    results = run_dali(
+    print('[f1 analysis][TEST] Running scDaliJoint (VAE)')
+    results = run_tests(
         A=A, D=D,
         cell_state=cell_state_cont,
-        test='daliBB',
+        model='scDALI-Joint',
         base_rate=.5,
-        test_cell_state_only=False,
         return_rho=True,
         n_cores=n_cores)
     adata.var['DALIJOINT'] = results['pvalues']
     adata.var['DALIJOINT_RHO'] = results['rho']
 
     # 5. lrt
-    print('[f1 analysis][TEST] Running LRT')
-    adata.var['DALIHOM'] = run_dali(
+    print('[f1 analysis][TEST] Running scDALI-Hom')
+    adata.var['DALIHOM'] = run_tests(
         A=A, D=D,
-        test='meanBB',
+        test='scDALI-Hom',
         base_rate=.5,
         n_cores=n_cores)['pvalues']
 
     # time-lineage test
-    print('[f1 analysis][TEST] Running DaliHet (TIME-LINEAGE)')
+    print('[f1 analysis][TEST] Running scDaliHet (TIME-LINEAGE)')
     for lineage in LINEAGES:
         lineage_cells = adata.obs['lineage_%s' % lineage].to_numpy()
         lineage_sites = adata.var['lineage_%s_covered' % lineage].to_numpy()
         # 6. lineage dalihet (time)
-        pvals = run_dali(
+        pvals = run_tests(
             A=A[lineage_cells, :][:, lineage_sites],
             D=D[lineage_cells, :][:, lineage_sites],
             cell_state=cell_state_time[lineage_cells, :],
-            test='daliBB',
+            test='scDALI-Het',
             n_cores=n_cores)['pvalues']
         adata.var['DALIHET_TIME_%s' % lineage] = np.nan
         adata.var.loc[lineage_sites, 'DALIHET_TIME_%s' % lineage] = pvals
