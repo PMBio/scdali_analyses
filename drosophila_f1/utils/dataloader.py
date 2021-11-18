@@ -272,7 +272,6 @@ def load_allelic_count_data(
 
     adatas = []
     for exp_id in exp_ids:
-        counts_dict = settings.COUNTS_DICT(exp_id, regions, wasp_corrected)
         adatas.append(read_allelic_counts_f1(
             allele1_file=settings.ALLELE1_COUNTS(exp_id),
             allele2_file=settings.ALLELE2_COUNTS(exp_id),
